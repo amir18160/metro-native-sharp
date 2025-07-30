@@ -14,8 +14,9 @@ export interface logDTO {
   filename: string;
 }
 
-export async function getLogJson(data: logDTO) {
+export async function getDetails(data: logDTO) {
   const url = `/logs/${data.filename}`;
   const response = await apiClient.get<ILogEntry>(url);
+
   return response.data;
 }

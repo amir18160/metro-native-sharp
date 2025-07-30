@@ -13,17 +13,19 @@ export default function LogListPage() {
     return <Text className="font-semibold">دریافت ناموفق</Text>;
   }
 
+  console.log(logs.data);
+
   return (
     <ScrollView>
       <Text>This is list of logs</Text>
 
-      {logs?.data &&
+      {Array.isArray(logs?.data) &&
         logs.data.map((log) => (
           <Link
             key={log}
             href={{ pathname: '/(drawer)/(admin)/Logs/[LogName]', params: { LogName: log } }}
             asChild>
-            <Pressable>
+            <Pressable className="w-full flex-1 items-center justify-center rounded-2xl bg-fuchsia-100 p-6">
               <Text variant="title2">{log}</Text>
             </Pressable>
           </Link>

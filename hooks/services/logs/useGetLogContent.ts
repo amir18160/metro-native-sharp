@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getLogJson, logDTO } from '~/services/remote/logsService';
+import { getDetails, logDTO } from '~/services/remote/logsService';
 
 export const useGetLogContent = (data: logDTO) => {
   return useQuery({
-    queryKey: ['getLogList'],
-    queryFn: () => getLogJson(data),
+    queryKey: ['getLogContent'],
+    queryFn: () => getDetails(data),
+    staleTime: 1000 * 3,
   });
 };

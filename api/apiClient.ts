@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '~/constants/urls';
+import { useUserStore } from '~/stores/userUserStore';
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -8,15 +9,12 @@ const apiClient = axios.create({
 // Add a request interceptor
 apiClient.interceptors.request.use(
   async (config) => {
-    /*
-    
-    const token = await AsyncStorage.getItem('user-token');
-    
-    // If the token exists, add it to the Authorization header
+    const user = useUserStore.getState().getUser();
+    const token = user?.token;
+
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    */
 
     return config;
   },

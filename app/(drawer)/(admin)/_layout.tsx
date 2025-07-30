@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Redirect } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { useUserStore } from '~/stores/userUserStore';
 import { Roles } from '~/types/common/roles';
 
@@ -13,9 +13,13 @@ const AdminLayout = () => {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="logs" options={{ title: 'Application Logs' }} />
-    </Stack>
+    <>
+      <Tabs>
+        <Tabs.Screen name="(tabs)/Logs" options={{ title: 'Application Logs' }} />
+        <Tabs.Screen name="(tabs)/Tasks" options={{ title: 'Tasks Logs' }} />
+        <Tabs.Screen name="(tabs)/Dashboard" options={{ title: 'Dashboard Logs' }} />
+      </Tabs>
+    </>
   );
 };
 
