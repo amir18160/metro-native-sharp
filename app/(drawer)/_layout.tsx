@@ -5,6 +5,7 @@ export default function DrawerLayout() {
     <Drawer>
       <Drawer.Screen name="user/home" options={{ title: 'User Home' }} />
       <Drawer.Screen name="admin/dashboard" options={{ title: 'Admin Dashboard' }} />
+      <Drawer.Screen name="admin/logs" options={{ title: 'Logs' }} />
     </Drawer>
   );
 }

@@ -24,6 +24,7 @@ export default function Screen() {
     <>
       <Button title="Login" onPress={() => router.push('/(auth)/Login')} />
       <Button title="register" onPress={() => router.push('/(auth)/Register')} />
+      <Button title="Logs" onPress={() => router.push('/(drawer)/(admin)/Logs/LogList')} />
       <Button
         title="Open Drawer (User Home)"
         onPress={() => router.replace('/(drawer)/(admin)/dashboard')}

@@ -1,7 +1,5 @@
 import React from 'react';
 import { Stack, Redirect } from 'expo-router';
-
-import { View, Text } from 'react-native';
 import { useUserStore } from '~/stores/userUserStore';
 import { Roles } from '~/types/common/roles';
 
