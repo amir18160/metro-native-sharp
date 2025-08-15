@@ -1,11 +1,10 @@
 import apiClient from '~/api/apiClient';
-import { ILogEntry, ILogList } from '~/types/server/logs/IServerLogs';
 
 /*********** Get list of logs **************/
 
 export async function getLogList() {
   const url = 'logs/get-logs';
-  const response = await apiClient.get<ILogList>(url);
+  const response = await apiClient.get<string[]>(url);
   return response.data;
 }
 
@@ -16,7 +15,7 @@ export interface logDTO {
 
 export async function getDetails(data: logDTO) {
   const url = `/logs/${data.filename}`;
-  const response = await apiClient.get<ILogEntry>(url);
+  const response = await apiClient.get<string>(url);
 
   return response.data;
 }

@@ -1,34 +1,41 @@
-import { useHeaderHeight } from '@react-navigation/elements';
-import { LegendList } from '@legendapp/list';
-import { cssInterop } from 'nativewind';
-import * as React from 'react';
-import { Linking, useWindowDimensions, View, Alert } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, View } from 'react-native';
 
-import { Icon } from '@roninoss/icons';
-
-import { Text } from '~/components/nativewindui/Text';
-
-import { useColorScheme } from '~/hooks/general/useColorScheme';
-import { Button } from '~/components/Button';
+import { Button } from '~/components/TestButton';
 import { useRouter } from 'expo-router';
 
-cssInterop(LegendList, {
-  className: 'style',
-  contentContainerClassName: 'contentContainerStyle',
-});
-
 export default function Screen() {
-  const router = useRouter();
-  return (
-    <>
-      <Button title="Login" onPress={() => router.push('/(auth)/Login')} />
-      <Button title="register" onPress={() => router.push('/(auth)/Register')} />
-      <Button title="Logs" onPress={() => router.push('/(drawer)/(admin)/(tabs)/Logs/index')} />
-      <Button
-        title="Open Drawer (User Home)"
-        onPress={() => router.replace('/(drawer)/(admin)/dashboard')}
-      />
-    </>
-  );
+    const router = useRouter();
+    return (
+        <ScrollView>
+            <View className="mx-auto mb-14 flex w-full max-w-[95%] gap-2">
+                <Button title="Login" onPress={() => router.push('/(auth)/Login')} />
+                <Button title="register" onPress={() => router.push('/(auth)/Register')} />
+                <Button title="Logs" onPress={() => router.push('/(drawer)/(admin)/(tabs)/Logs')} />
+                <Button
+                    title="Account Details"
+                    onPress={() => router.push('/(account)/AccountDetailPage')}
+                />
+                <Button title="Tasks List" onPress={() => router.push('/(tasks)/TaskListPage')} />
+                <Button title="Add Task" onPress={() => router.push('/(tasks)/AddTaskForm')} />
+                <Button title="SearchMedia" onPress={() => router.push('/(tmdb)/SearchMedia')} />
+                <Button title="Indexers" onPress={() => router.push('/(indexer)/Indexers')} />
+                <Button
+                    title="Indexer Search"
+                    onPress={() => router.push('/(indexer)/IndexerSearchTorrent')}
+                />
+                <Button title="Browser" onPress={() => router.push('/(browser)/Browser')} />
+                <Button title="Drawer User" onPress={() => router.push('/(drawer)/(user)/Home')} />
+                <Button
+                    title="Drawer Admin"
+                    onPress={() => router.push('/(drawer)/(admin)/(tabs)/Dashboard')}
+                />
+                <Button title="Settings" onPress={() => router.push('/(settings)/RootSettings')} />
+                <Button
+                    title="Torrent Search"
+                    onPress={() => router.push('/(torrentSearch)/TorrentSearch')}
+                />
+                <Button title="File Manager" onPress={() => router.push('/(files)/Files')} />
+            </View>
+        </ScrollView>
+    );
 }

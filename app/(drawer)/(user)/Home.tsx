@@ -1,10 +1,5 @@
-// app/(drawer)/user/home.tsx
-import { Text, View } from 'react-native';
+import NotImplemented from '~/components/NotImplemented/NotImplemented';
 
 export default function UserHome() {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text>User Home</Text>
-    </View>
-  );
+    return <NotImplemented />;
 }

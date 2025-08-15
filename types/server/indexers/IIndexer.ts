@@ -1,0 +1,33 @@
+export interface IIndexer {
+    id: number;
+    name: string;
+    fields: unknown;
+    implementationName: string;
+    implementation: string;
+    configContract: string;
+    infoLink: string;
+    message: unknown;
+    tags: number[];
+    presets: string[];
+    indexerUrls: string[];
+    legacyUrls: string[];
+    definitionName: string;
+    description: string;
+    language: string;
+    encoding: string;
+    enable: boolean;
+    redirect: boolean;
+    supportsRss: boolean;
+    supportsSearch: boolean;
+    supportsRedirect: boolean;
+    supportsPagination: boolean;
+    appProfileId: number;
+    protocol: string;
+    privacy: string;
+    capabilities: unknown;
+    priority: number;
+    downloadClientId: number;
+    added: string | Date;
+    status: unknown;
+    sortName: string;
+}
