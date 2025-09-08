@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 
 // NativeWind: use className on RN components
@@ -58,6 +59,7 @@ export default function FileManager({
     const [actionModalVisible, setActionModalVisible] = useState(false);
     const [targetFileActions, setTargetFileActions] = useState<FileEntry | null>(null);
     const [topActionsVisible, setTopActionsVisible] = useState(false);
+    const [importing, setImporting] = useState(false);
 
     const router = useRouter();
 
@@ -65,20 +67,16 @@ export default function FileManager({
         try {
             setLoading(true);
             // Ensure directory exists
-            const dirInfo = await FileSystem.getInfoAsync(
-                directory.endsWith('/') ? directory : directory + '/'
-            );
+            const dirPath = directory.endsWith('/') ? directory : directory + '/';
+            const dirInfo = await FileSystem.getInfoAsync(dirPath);
             if (!dirInfo.exists) {
                 // nothing to list
                 setFiles([]);
                 setLoading(false);
                 return;
             }
-            console.log(directory);
 
             const listing = await FileSystem.readDirectoryAsync(directory);
-
-            console.log(listing);
 
             const entries: FileEntry[] = [];
 
@@ -90,15 +88,15 @@ export default function FileManager({
                     entries.push({
                         uri,
                         name,
+                        // @ts-expect-error //  unknown error
                         size: info.size ?? null,
+                        // @ts-expect-error //  unknown error
                         modificationTime: info.modificationTime ?? null,
                     });
                 } catch (error) {
                     console.log('error', error);
                 }
             }
-
-            console.log(entries);
 
             // optional filter
             const filtered = fileFilter ? entries.filter(fileFilter) : entries;
@@ -197,7 +195,6 @@ export default function FileManager({
 
     const deleteSelected = () => {
         const targets = files.filter((f) => selectedUris.has(f.uri));
-        console.log('targets', targets);
 
         deleteFiles(targets);
     };
@@ -254,7 +251,9 @@ export default function FileManager({
                     else openFile(item);
                 }}
                 onLongPress={() => openActionsForFile(item)}
-                className={`mb-2 flex-row items-center justify-between rounded-lg p-3 ${isSelected ? 'bg-blue-100' : 'bg-white'}`}>
+                className={`mb-2 flex-row items-center justify-between rounded-lg p-3 ${
+                    isSelected ? 'bg-blue-100' : 'bg-white'
+                }`}>
                 <View className="flex-1">
                     <Text className="font-semibold text-sm text-gray-800">{item.name}</Text>
                     <Text className="text-xs text-gray-500">
@@ -281,6 +280,13 @@ export default function FileManager({
                 <Text className="font-bold text-lg">File Manager</Text>
 
                 <View className="flex-row items-center">
+                    {/* Add file button */}
+                    <Pressable
+                        onPress={() => addFileFromDevice()}
+                        className="mr-2 rounded-md bg-blue-500 px-3 py-1">
+                        <Text className="text-sm text-white">+ Add</Text>
+                    </Pressable>
+
                     {showTopActions && (
                         <Pressable onPress={() => setTopActionsVisible(true)} className="mr-2 p-2">
                             <Text className="text-2xl text-gray-600">⋮</Text>
@@ -329,14 +335,18 @@ export default function FileManager({
                 <View className="flex-row items-center">
                     <Pressable className="mr-2 px-3 py-1" onPress={() => handleOpenSelected()}>
                         <Text
-                            className={`font-semibold text-sm ${selectedUris.size ? 'text-blue-600' : 'text-gray-300'}`}>
+                            className={`font-semibold text-sm ${
+                                selectedUris.size ? 'text-blue-600' : 'text-gray-300'
+                            }`}>
                             Open
                         </Text>
                     </Pressable>
 
                     <Pressable className="mr-2 px-3 py-1" onPress={() => shareSelected()}>
                         <Text
-                            className={`font-semibold text-sm ${selectedUris.size ? 'text-green-600' : 'text-gray-300'}`}>
+                            className={`font-semibold text-sm ${
+                                selectedUris.size ? 'text-green-600' : 'text-gray-300'
+                            }`}>
                             Share
                         </Text>
                     </Pressable>
@@ -421,6 +431,16 @@ export default function FileManager({
                     </View>
                 </Pressable>
             </Modal>
+
+            {/* Importing overlay */}
+            {importing && (
+                <View className="absolute inset-0 items-center justify-center bg-black/30">
+                    <View className="rounded-lg bg-white p-4">
+                        <ActivityIndicator />
+                        <Text className="mt-2">Importing file...</Text>
+                    </View>
+                </View>
+            )}
         </View>
     );
 
@@ -431,5 +451,70 @@ export default function FileManager({
         // if multi-select allowed but only single open supported, open first
         await openFile(selected[0]);
         clearSelection();
+    }
+
+    // Adds file from device storage into the target directory
+    async function addFileFromDevice() {
+        try {
+            setImporting(true);
+            // Ask user to pick any document
+            const res = await DocumentPicker.getDocumentAsync({
+                copyToCacheDirectory: true, // ensure a file:// uri on all platforms
+                multiple: false,
+            });
+
+            if (res.canceled) {
+                return;
+            }
+
+            const asset = res.assets[0];
+            const pickedUri = asset.uri;
+            // fallback name: use res.name or derive from uri
+            let filename = asset.name;
+
+            // ensure directory path ends with slash
+            const dirPath = directory.endsWith('/') ? directory : directory + '/';
+            // destination full path
+            let destUri = dirPath + filename;
+
+            // handle name collisions: if exists, append suffix _1, _2...
+            let counter = 1;
+            while ((await FileSystem.getInfoAsync(destUri)).exists) {
+                // generate a new name with suffix
+                const parts = filename.split('.');
+                if (parts.length > 1) {
+                    const ext = parts.pop();
+                    const base = parts.join('.');
+                    filename = `${base}_${counter}.${ext}`;
+                } else {
+                    filename = `${filename}_${counter}`;
+                }
+                destUri = dirPath + filename;
+                counter++;
+            }
+
+            // Try copying first (works on file:// URIs). If fails, fall back to downloadAsync
+            try {
+                await FileSystem.copyAsync({ from: pickedUri, to: destUri });
+            } catch (copyErr) {
+                console.log('copyAsync failed, trying downloadAsync', copyErr);
+                try {
+                    // downloadAsync will work with content:// URIs on Android and http(s)
+                    await FileSystem.downloadAsync(pickedUri, destUri);
+                } catch (downloadErr) {
+                    console.log('downloadAsync also failed', downloadErr);
+                    throw new Error('Could not import file from the selected source.');
+                }
+            }
+
+            // refresh file list
+            await listFiles();
+            Alert.alert('Success', `Imported "${filename}"`);
+        } catch (err: any) {
+            console.log('addFileFromDevice error', err);
+            Alert.alert('Import failed', err?.message ?? 'Failed to import file');
+        } finally {
+            setImporting(false);
+        }
     }
 }

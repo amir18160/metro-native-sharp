@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useGetTMDbMovieDetails } from '~/hooks/services/tmdb/useGetTMDbMovieDetails';
 import { useGetTMDbShowDetails } from '~/hooks/services/tmdb/useGetTMDbShowDetails';
-import { Toast } from 'toastify-react-native';
 import { TMDbMedia } from '~/types/server/tmdb/tm-db-media';
 import { MediaType } from '~/types/server/tmdb/media-type';
 import Modal from '../common/Modal';
@@ -9,6 +8,7 @@ import { SearchableMediaList } from '../common/SearchableMediaList';
 import { Pressable, View } from 'react-native';
 import AnimatedTextField from '../common/AnimatedTextField';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { modal } from '~/stores/useAnimatedModalCenterStore';
 
 interface IProps {
     imdbId?: string;
@@ -22,7 +22,10 @@ export default function FilterByIMDbId({ setImdbId, imdbId }: IProps) {
     const tvDetails = useGetTMDbShowDetails();
 
     function handleError(message: string) {
-        Toast.error(message);
+        modal.error({
+            title: 'خطا',
+            message,
+        });
     }
 
     function handleSuccess(imdbId?: string) {

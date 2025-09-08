@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Text, Pressable, ScrollView, ActivityIndicator, View } from 'react-native';
+import { Text, ScrollView, View } from 'react-native';
 
 import { useAddTaskStore } from '~/stores/useAddTaskStore';
 import { useAddTorrentTask } from '~/hooks/services/tasks/useAddTorrentTask';
@@ -13,23 +13,12 @@ import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { TorrentTaskPriority, TorrentTaskType } from '~/types/server/tasks/ITask';
 import { useLocalSearchParams } from 'expo-router';
 import { Toast } from 'toastify-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import SubmitButton from '~/components/common/SubmitButton';
 
 type AddTaskFormErrorKey = 'title' | 'magnet' | 'imdbId' | 'seasonNumber' | 'episodeNumber';
 
 type AddTaskFormErrors = Partial<Record<AddTaskFormErrorKey, string>>;
-
-const SubmitButton = ({ onPress, isPending }: { onPress: () => void; isPending: boolean }) => (
-    <Pressable
-        className="mt-4 items-center rounded-lg bg-blue-600 p-4 active:bg-blue-700 disabled:bg-gray-600 disabled:opacity-70"
-        onPress={onPress}
-        disabled={isPending}>
-        {isPending ? (
-            <ActivityIndicator color="#fff" />
-        ) : (
-            <Text className="font-bold text-lg text-white">Add Task</Text>
-        )}
-    </Pressable>
-);
 
 const AddTaskForm = () => {
     const { mutate, isPending } = useAddTorrentTask();
@@ -41,7 +30,7 @@ const AddTaskForm = () => {
     useEffect(() => {
         if (magnet) {
             store.setMagnet(magnet);
-            Toast.show({ type: 'success', text1: 'Success', text2: 'Magnet URI has been set.' });
+            Toast.show({ type: 'success', text1: 'موفق', text2: 'آدرس تورنت با موفقیت اضافه شد.' });
         }
         if (imdbId) {
             store.setImdbId(imdbId);
@@ -113,26 +102,31 @@ const AddTaskForm = () => {
     };
 
     return (
-        <ScrollView
-            nestedScrollEnabled
-            className="flex-1 bg-gray-900"
-            contentContainerStyle={{ padding: 20, paddingBottom: 80 }}>
-            <Text className="mb-6 text-center font-bold text-2xl text-gray-50">
-                Add New Torrent Task
-            </Text>
+        <SafeAreaView className="flex-1">
+            <View className="w-full">
+                <View className="w-full border-b border-gray-300 px-4">
+                    <SelectMedia />
+                </View>
+            </View>
+            <ScrollView
+                nestedScrollEnabled
+                className="flex-1 bg-white"
+                contentContainerStyle={{ padding: 20 }}>
+                <SelectSubtitle />
 
-            <SelectMedia />
+                <MagnetField error={errors.magnet} />
 
-            <SelectSubtitle />
+                <ImdbField error={errors.imdbId} />
 
-            <MagnetField error={errors.magnet} />
+                <TaskPickers />
+            </ScrollView>
 
-            <ImdbField error={errors.imdbId} />
-
-            <TaskPickers />
-
-            <SubmitButton onPress={handleSubmit} isPending={isPending} />
-        </ScrollView>
+            <View className="w-full bg-white p-2">
+                <View className="max-w-360 w-full px-4">
+                    <SubmitButton onPress={handleSubmit} isPending={isPending} title="Add Task" />
+                </View>
+            </View>
+        </SafeAreaView>
     );
 };
 

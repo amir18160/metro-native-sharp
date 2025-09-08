@@ -17,9 +17,9 @@ export default function NotImplemented() {
             </Text>
 
             <Pressable
-                onPress={() => router.back()}
+                onPress={() => router.replace('/')}
                 className="rounded-xl bg-rose-500 px-6 py-3 shadow-lg active:bg-rose-600">
-                <Text className="font-semibold text-lg text-white">بازگشت</Text>
+                <Text className="font-semibold text-lg text-white">بازگشت به خانه</Text>
             </Pressable>
         </View>
     );

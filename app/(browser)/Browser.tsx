@@ -395,8 +395,10 @@ export default function MultiTabBrowser() {
 
     const homeTiles = [
         { id: 'google', title: 'Google', url: 'https://google.com' },
-        { id: 'subsource', title: 'Subsource', url: 'https://subsource.net' },
-        { id: 'example', title: 'Example', url: 'https://example.com' },
+        { id: 'subsource', title: '✅ Subsource', url: 'https://subsource.net' },
+        { id: 'subf2m', title: '✅ Subf2m', url: 'https://subf2m.co/' },
+        { id: 'subtitlestar', title: 'Subtitlestar', url: 'https://subtitlestar.com/' },
+        { id: 'subkade', title: 'Subkade', url: 'https://subkade.ir/' },
     ];
 
     const HomeScreen = () => (
@@ -506,14 +508,6 @@ export default function MultiTabBrowser() {
                         onNavigationStateChange={(navState: WebViewNavigation) => {
                             if (navState.url !== activeTab.url)
                                 updateTab(activeTabId, navState.url, navState.title);
-                        }}
-                        onShouldStartLoadWithRequest={(request) => {
-                            const { url } = request;
-                            if (shouldIntercept(url)) {
-                                downloadManually(url, request.title);
-                                return false;
-                            }
-                            return true;
                         }}
                         onError={(syntheticEvent) => {
                             const nativeEvent: any = syntheticEvent.nativeEvent;
@@ -733,15 +727,6 @@ const styles = StyleSheet.create({
     historyItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
     historyUrl: { color: '#666' },
     activeHistory: { color: '#4285F4', fontWeight: 'bold' },
-    newTabButton: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#4285F4',
-        padding: 12,
-        borderRadius: 8,
-    },
-    newTabText: { color: 'white', fontWeight: 'bold', marginLeft: 8 },
 
     // Home screen
     homeContainer: { flex: 1, backgroundColor: '#fff' },

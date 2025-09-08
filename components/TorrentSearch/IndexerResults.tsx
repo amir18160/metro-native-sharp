@@ -1,4 +1,4 @@
-import { FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
 import { useSearchIndexer } from '~/hooks/services/indexer/useSearchIndexer';
 import { Error } from '~/components/Error/Error';
 import { Loading } from '~/components/Loading/Loading';

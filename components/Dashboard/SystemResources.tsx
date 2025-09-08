@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -12,9 +12,9 @@ import { IDriveInfo } from '~/types/server/dashboard/resources';
 
 const getProgressColor = (percent: number): string => {
     'worklet';
-    if (percent < 50) return '#22c55e';
-    if (percent < 80) return '#facc15';
-    return '#dc2626';
+    if (percent < 50) return '#22c55e'; // green
+    if (percent < 80) return '#eab308'; // amber
+    return '#dc2626'; // red
 };
 
 const DriveBar = ({ drive }: { drive: IDriveInfo }) => {
@@ -32,14 +32,14 @@ const DriveBar = ({ drive }: { drive: IDriveInfo }) => {
     return (
         <View className="mb-3">
             <View className="flex-row justify-between">
-                <Text className="font-medium text-sm text-white">
+                <Text className="font-medium text-sm text-gray-800">
                     {drive.name} ({drive.driveFormat})
                 </Text>
-                <Text className="text-sm text-white">
+                <Text className="text-sm text-gray-600">
                     {drive.usedSpaceGb.toFixed(1)} GB / {drive.totalSizeGb.toFixed(1)} GB
                 </Text>
             </View>
-            <View className="mt-1 h-2 rounded-full bg-gray-700">
+            <View className="mt-1 h-2 overflow-hidden rounded-full bg-gray-200">
                 <Animated.View className="h-2 rounded-full" style={animatedStyle} />
             </View>
         </View>
@@ -48,78 +48,78 @@ const DriveBar = ({ drive }: { drive: IDriveInfo }) => {
 
 export default function SystemInfoDisplay() {
     const systemResources = useGetSystemResources();
-
     const systemInfo = systemResources.data?.data;
 
     if (!systemInfo) return null;
 
     return (
-        <View className="flex-col rounded-3xl bg-indigo-900 p-4">
-            <View className="mb-5  justify-between">
-                <View className="mb-4 justify-between">
-                    <View>
-                        <Text className="mb-1 text-xs text-indigo-300">OS</Text>
-                        <Text className="text-sm text-white" numberOfLines={1}>
-                            {systemInfo.osDescription}
-                        </Text>
-                    </View>
-                    <View>
-                        <Text className="mb-1 text-xs text-indigo-300">Framework</Text>
-                        <Text className="text-sm text-white">
-                            {systemInfo.frameworkDescription}
-                        </Text>
-                    </View>
+        <View className="flex-1 bg-gray-100 p-4">
+            <Text className="mb-4 font-bold text-2xl text-gray-900">⚙️ System Info</Text>
+
+            {/* OS & Framework */}
+            <View className="mb-6">
+                <View className="mb-3">
+                    <Text className="mb-1 text-xs text-gray-500">OS</Text>
+                    <Text className="text-sm text-gray-800" numberOfLines={1}>
+                        {systemInfo.osDescription}
+                    </Text>
                 </View>
-
-                <View className="flex-row">
-                    <View className="items-center">
-                        <CircularProgress
-                            value={systemInfo.cpuUsagePercentage}
-                            radius={36}
-                            maxValue={100}
-                            title="CPU"
-                            titleStyle={{ fontSize: 12, color: '#a5b4fc' }}
-                            valueSuffix="%"
-                            activeStrokeColor={getProgressColor(systemInfo.cpuUsagePercentage)}
-                            inActiveStrokeColor="#3f3f46"
-                            progressValueStyle={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: 'white',
-                            }}
-                            duration={1000}
-                        />
-                        <Text className="mt-1 text-xs text-indigo-200">
-                            {systemInfo.cpuCoreCount} cores
-                        </Text>
-                    </View>
-
-                    <View className="items-center">
-                        <CircularProgress
-                            value={systemInfo.ramUsagePercentage}
-                            radius={36}
-                            maxValue={100}
-                            title="RAM"
-                            titleStyle={{ fontSize: 12, color: '#a5b4fc' }}
-                            valueSuffix="%"
-                            activeStrokeColor={getProgressColor(systemInfo.ramUsagePercentage)}
-                            inActiveStrokeColor="#3f3f46"
-                            progressValueStyle={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: 'white',
-                            }}
-                            duration={1000}
-                        />
-                        <Text className="mt-1 text-xs text-indigo-200">
-                            {(systemInfo.usedRamMb / 1024).toFixed(1)} GB /{' '}
-                            {(systemInfo.totalRamMb / 1024).toFixed(1)} GB
-                        </Text>
-                    </View>
+                <View>
+                    <Text className="mb-1 text-xs text-gray-500">Framework</Text>
+                    <Text className="text-sm text-gray-800">{systemInfo.frameworkDescription}</Text>
                 </View>
             </View>
 
-            <View className="justify-evenly">
+            {/* CPU & RAM */}
+            <View className="mb-6 flex-row justify-between">
+                <View className="w-[48%] items-center rounded-2xl bg-white p-4 shadow">
+                    <CircularProgress
+                        value={systemInfo.cpuUsagePercentage}
+                        radius={36}
+                        maxValue={100}
+                        title="CPU"
+                        titleStyle={{ fontSize: 12, color: '#6b7280' }}
+                        valueSuffix="%"
+                        activeStrokeColor={getProgressColor(systemInfo.cpuUsagePercentage)}
+                        inActiveStrokeColor="#e5e7eb"
+                        progressValueStyle={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#111827',
+                        }}
+                        duration={1000}
+                    />
+                    <Text className="mt-2 text-xs text-gray-600">
+                        {systemInfo.cpuCoreCount} cores
+                    </Text>
+                </View>
+
+                <View className="w-[48%] items-center rounded-2xl bg-white p-4 shadow">
+                    <CircularProgress
+                        value={systemInfo.ramUsagePercentage}
+                        radius={36}
+                        maxValue={100}
+                        title="RAM"
+                        titleStyle={{ fontSize: 12, color: '#6b7280' }}
+                        valueSuffix="%"
+                        activeStrokeColor={getProgressColor(systemInfo.ramUsagePercentage)}
+                        inActiveStrokeColor="#e5e7eb"
+                        progressValueStyle={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#111827',
+                        }}
+                        duration={1000}
+                    />
+                    <Text className="mt-2 text-xs text-gray-600">
+                        {(systemInfo.usedRamMb / 1024).toFixed(1)} GB /{' '}
+                        {(systemInfo.totalRamMb / 1024).toFixed(1)} GB
+                    </Text>
+                </View>
+            </View>
+
+            {/* Drives */}
+            <View>
                 {systemInfo.drives.map((drive) => (
                     <DriveBar key={drive.name} drive={drive} />
                 ))}

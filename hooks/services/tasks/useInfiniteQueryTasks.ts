@@ -9,9 +9,9 @@ export const useInfiniteQueryTasks = (query: ITaskFilters) => {
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
             if (lastPage.status === 'success' && lastPage.data) {
-                const { pageNumber, totalPages } = lastPage.data;
-                if (pageNumber < totalPages) {
-                    return pageNumber + 1;
+                const { currentPage, totalPages } = lastPage.data;
+                if (currentPage < totalPages) {
+                    return currentPage + 1;
                 }
             }
             return undefined;

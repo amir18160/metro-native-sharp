@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { login } from '~/services/remote/authService';
-import { Toast } from 'toastify-react-native';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '~/stores/useUserStore';
+import { modal } from '~/stores/useAnimatedModalCenterStore';
 
 export const useLogin = () => {
     const router = useRouter();
@@ -17,16 +17,16 @@ export const useLogin = () => {
 
             router.replace('/(drawer)/(user)/Home');
 
-            Toast.show({
-                type: 'success',
-                text1: 'خوش برگشتید!  ورود با موفقیت انجام شد.',
+            modal.success({
+                title: 'موفق',
+                message: 'خوش برگشتید!  ورود با موفقیت انجام شد.',
             });
         },
 
         onError: (error) => {
-            Toast.show({
-                type: 'error',
-                text1: 'ناموفق، لطفا نام کاربری و رمز عبور خود را بررسی کنید.',
+            modal.error({
+                title: 'ناموفق',
+                message: 'ناموفق، لطفا نام کاربری و رمز عبور خود را بررسی کنید.',
             });
         },
     });

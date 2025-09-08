@@ -68,6 +68,7 @@ export default function MagnetField({ error }: IProps) {
             <AnimatedTextField
                 variant="magnet"
                 value={magnet ?? ''}
+                label="Magnet Link"
                 onChangeText={(value) => setMagnet(value)}
                 placeholder="magnet:?xt"
                 iconLeft={<Ionicons name="link" size={20} color="white" />}
@@ -75,6 +76,7 @@ export default function MagnetField({ error }: IProps) {
                 showPasteButton
                 required
                 errorMessage={error}
+                size="md"
             />
 
             <TorrentSearchModal

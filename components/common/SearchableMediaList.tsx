@@ -41,7 +41,7 @@ export function SearchableMediaList({
     return (
         <View className="flex-1 bg-white">
             {/* Fixed Search Bar */}
-            <View className="absolute left-0 right-0 top-0 z-10 border-b border-gray-200 bg-white p-3">
+            <View className="z-10 border-b border-gray-200 bg-white p-3">
                 <AnimatedTextField
                     showPasteButton
                     placeholder={placeholder}
@@ -52,7 +52,7 @@ export function SearchableMediaList({
             </View>
 
             {/* List Container */}
-            <View style={{ paddingTop: 70, height: height - 70 }}>
+            <View style={{ height: height - 70 }}>
                 {/* Loading State */}
                 {isLoading && (
                     <View className="flex-1 items-center justify-center">
@@ -76,56 +76,58 @@ export function SearchableMediaList({
                 )}
 
                 {/* Animated List */}
-                <FlatList
-                    data={results}
-                    keyExtractor={(item) => item.id.toString()}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    renderItem={({ item, index }) => (
-                        <Animated.View
-                            entering={FadeInUp.delay(index * 60).springify()}
-                            exiting={FadeOutUp}>
-                            <TouchableOpacity
-                                className="flex-row items-center border-b border-gray-100 p-3 active:opacity-70"
-                                onPress={() => handleSelect(item)}
-                                disabled={!!selectingId}>
-                                {/* Poster */}
-                                <CustomImage
-                                    source={item.poster ? { uri: item.poster } : fallbackPoster}
-                                    fallbackSource={fallbackPoster}
-                                    className="mr-3 h-14 w-10 rounded-lg"
-                                    resizeMode="cover"
-                                    defaultSource={fallbackPoster}
-                                    resizeMethod="resize"
-                                />
+                {data && (
+                    <FlatList
+                        data={results}
+                        keyExtractor={(item) => item.id.toString()}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                        renderItem={({ item, index }) => (
+                            <Animated.View
+                                entering={FadeInUp.delay(index * 60).springify()}
+                                exiting={FadeOutUp}>
+                                <TouchableOpacity
+                                    className="flex-row items-center border-b border-gray-100 p-3 active:opacity-70"
+                                    onPress={() => handleSelect(item)}
+                                    disabled={!!selectingId}>
+                                    {/* Poster */}
+                                    <CustomImage
+                                        source={item.poster ? { uri: item.poster } : fallbackPoster}
+                                        fallbackSource={fallbackPoster}
+                                        className="mr-3 h-14 w-10 rounded-lg"
+                                        resizeMode="cover"
+                                        defaultSource={fallbackPoster}
+                                        resizeMethod="resize"
+                                    />
 
-                                {/* Info */}
-                                <View className="flex-1">
-                                    <Text
-                                        className="font-semibold text-base text-black"
-                                        numberOfLines={1}>
-                                        {item.title || item.originalTitle}
-                                    </Text>
-                                    <Text className="text-xs text-gray-500">
-                                        {item.mediaType === MediaType.Movie && 'Movie'}
-                                        {item.mediaType === MediaType.Tv && 'TV Show'}
-                                        {item.mediaType === MediaType.Person && 'Person'}
-                                    </Text>
-                                    {item.releaseDate && (
-                                        <Text className="text-xs text-gray-400">
-                                            {new Date(item.releaseDate).getFullYear()}
+                                    {/* Info */}
+                                    <View className="flex-1">
+                                        <Text
+                                            className="font-semibold text-base text-black"
+                                            numberOfLines={1}>
+                                            {item.title || item.originalTitle}
                                         </Text>
-                                    )}
-                                </View>
+                                        <Text className="text-xs text-gray-500">
+                                            {item.mediaType === MediaType.Movie && 'Movie'}
+                                            {item.mediaType === MediaType.Tv && 'TV Show'}
+                                            {item.mediaType === MediaType.Person && 'Person'}
+                                        </Text>
+                                        {item.releaseDate && (
+                                            <Text className="text-xs text-gray-400">
+                                                {new Date(item.releaseDate).getFullYear()}
+                                            </Text>
+                                        )}
+                                    </View>
 
-                                {/* Loading Indicator on Select */}
-                                {selectingId === item.id && (
-                                    <ActivityIndicator size="small" color="#000" />
-                                )}
-                            </TouchableOpacity>
-                        </Animated.View>
-                    )}
-                />
+                                    {/* Loading Indicator on Select */}
+                                    {selectingId === item.id && (
+                                        <ActivityIndicator size="small" color="#000" />
+                                    )}
+                                </TouchableOpacity>
+                            </Animated.View>
+                        )}
+                    />
+                )}
             </View>
         </View>
     );

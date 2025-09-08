@@ -39,8 +39,8 @@ export default function SelectSubtitle() {
         setStatusMessage('no subtitle has been set');
         Toast.show({
             type: 'info',
-            text1: 'Cleared',
-            text2: 'Subtitle selection has been cleared.',
+            text1: 'پاک شد.',
+            text2: 'زیرنویس انتخابی با موفقیت پاک شد.',
         });
     };
 
@@ -59,7 +59,7 @@ export default function SelectSubtitle() {
 
     return (
         <Animated.View entering={FadeInDown.duration(500)} className="my-6">
-            <Text className="mb-3 font-semibold text-xl text-white">Select Subtitle</Text>
+            <Text className="text-grey-800 mb-3 font-semibold text-xl">Select Subtitle</Text>
 
             {/* Buttons Row */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>

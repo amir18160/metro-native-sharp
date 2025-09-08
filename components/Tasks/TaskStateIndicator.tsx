@@ -29,7 +29,7 @@ export default function TaskStateIndicator({ state }: IProps) {
 
     return (
         <View className="flex-row items-center gap-2">
-            <View className={`h-2 w-2 rounded-full ${stateColors[state] || 'bg-gray-400'}`} />;
+            <View className={`h-2 w-2 rounded-full ${stateColors[state] || 'bg-gray-400'}`} />
             <Text>{state}</Text>
         </View>
     );

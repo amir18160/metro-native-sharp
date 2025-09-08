@@ -51,7 +51,7 @@ export default function LogListPage() {
     }
 
     return (
-        <View className="flex-1 bg-gray-50 p-4 dark:bg-gray-900">
+        <View className="mb-20 flex-1 bg-gray-50 p-4 dark:bg-gray-900">
             <Text variant="title1" className="mb-4 text-center text-gray-800 dark:text-white">
                 گزارشات سیستم
             </Text>

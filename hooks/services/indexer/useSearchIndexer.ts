@@ -8,7 +8,8 @@ export const useSearchIndexer = () => {
         onError: (error) => {
             Toast.show({
                 type: 'error',
-                text1: 'رکب خوردیم که! بعدا تلاش کنید.',
+                text1: 'خطا',
+                text2: 'رکب خوردیم که! بعدا تلاش کنید.',
             });
         },
     });

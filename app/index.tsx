@@ -2,9 +2,22 @@ import { ScrollView, View } from 'react-native';
 
 import { Button } from '~/components/TestButton';
 import { useRouter } from 'expo-router';
+import { useUserStore } from '~/stores/useUserStore';
+import { Roles } from '~/types/common/roles';
+import { useEffect } from 'react';
 
 export default function Screen() {
     const router = useRouter();
+    const user = useUserStore((state) => state.user);
+
+    useEffect(() => {
+        if (user && (user.role === Roles.Admin || user.role === Roles.Owner)) {
+            router.replace('/(drawer)/(admin)/(tabs)/Dashboard');
+        } else {
+            router.replace('/(drawer)/(user)/Home');
+        }
+    }, [user, router]);
+
     return (
         <ScrollView>
             <View className="mx-auto mb-14 flex w-full max-w-[95%] gap-2">

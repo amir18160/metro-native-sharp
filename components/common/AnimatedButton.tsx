@@ -6,6 +6,7 @@ import {
     GestureResponderEvent,
     StyleProp,
     ViewStyle,
+    StyleSheet,
 } from 'react-native';
 import Animated, {
     useSharedValue,
@@ -164,10 +165,10 @@ export function AnimatedButton({
                             <ActivityIndicator
                                 size="small"
                                 color={spinnerColor}
-                                style={{ marginRight: 8 }}
+                                style={styles.marginRight}
                             />
                         ) : leftIcon ? (
-                            <View style={{ marginRight: 8 }}>{leftIcon}</View>
+                            <View style={styles.marginRight}>{leftIcon}</View>
                         ) : null}
 
                         {/* Title / Custom content */}
@@ -182,10 +183,10 @@ export function AnimatedButton({
                             <ActivityIndicator
                                 size="small"
                                 color={spinnerColor}
-                                style={{ marginLeft: 8 }}
+                                style={styles.marginLeft}
                             />
                         ) : rightIcon ? (
-                            <View style={{ marginLeft: 8 }}>{rightIcon}</View>
+                            <View style={styles.marginLeft}>{rightIcon}</View>
                         ) : null}
                     </>
                 )}
@@ -193,3 +194,12 @@ export function AnimatedButton({
         </Animated.View>
     );
 }
+
+const styles = StyleSheet.create({
+    marginRight: {
+        marginRight: 8,
+    },
+    marginLeft: {
+        marginLeft: 8,
+    },
+});

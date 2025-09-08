@@ -1,18 +1,14 @@
 import '../global.css';
 import 'expo-dev-client';
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import { Icon } from '@roninoss/icons';
 import { DevToolsBubble } from 'react-native-react-query-devtools';
 
-import { Link, Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { Pressable, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
 import { PortalProvider } from '@gorhom/portal';
 
-import { ThemeToggle } from '~/components/ThemeToggle';
-import { cn } from '~/utilities/cn';
-import { useColorScheme, useInitialAndroidBarSync } from '~/hooks/general/useColorScheme';
+import { useInitialAndroidBarSync } from '~/hooks/general/useColorScheme';
 import { NAV_THEME } from '~/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '~/components/Toast/ToastProvider';
@@ -22,6 +18,7 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ModalProvider from '~/providers/ModalProvider';
 import { AuthRedirector } from '~/components/Auth/AuthRedirector';
+import CustomStatusBar from '~/components/StatusBar/CustomStatusBar';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -29,7 +26,6 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
     useInitialAndroidBarSync();
-    const { colorScheme, isDarkColorScheme } = useColorScheme();
     const isAppReady = useIsAppReady();
 
     if (!isAppReady) {
@@ -38,20 +34,16 @@ export default function RootLayout() {
 
     return (
         <>
-            <StatusBar
-                key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
-                style={isDarkColorScheme ? 'light' : 'dark'}
-            />
+            <CustomStatusBar />
 
             <QueryClientProvider client={queryClient}>
                 <PortalProvider>
                     <ModalProvider>
                         <AuthRedirector />
-                        <NavThemeProvider value={NAV_THEME[colorScheme]}>
-                            <GestureHandlerRootView style={{ flex: 1 }}>
+                        <NavThemeProvider value={NAV_THEME['light']}>
+                            <GestureHandlerRootView style={styles.flex}>
                                 <Stack screenOptions={SCREEN_OPTIONS}>
                                     <Stack.Screen name="index" options={INDEX_OPTIONS} />
-                                    <Stack.Screen name="modal" options={MODAL_OPTIONS} />
                                     <Stack.Screen
                                         name="(drawer)"
                                         options={{ headerShown: false }}
@@ -59,6 +51,30 @@ export default function RootLayout() {
                                     <Stack.Screen
                                         name="(browser)/Browser"
                                         options={{ headerShown: false }}
+                                    />
+                                    <Stack.Screen
+                                        name="(tasks)/AddTaskForm"
+                                        options={{
+                                            title: 'Add Task',
+                                        }}
+                                    />
+                                    <Stack.Screen
+                                        name="(telegram)/SendNotification"
+                                        options={{
+                                            title: 'Send Notification',
+                                        }}
+                                    />
+                                    <Stack.Screen
+                                        name="(telegram)/ForwardedFiles"
+                                        options={{
+                                            title: 'Forwarded Files',
+                                        }}
+                                    />
+                                    <Stack.Screen
+                                        name="(documents)/UpdateDocuments"
+                                        options={{
+                                            title: 'Update Documents',
+                                        }}
                                     />
                                 </Stack>
                             </GestureHandlerRootView>
@@ -72,35 +88,21 @@ export default function RootLayout() {
     );
 }
 
-const SCREEN_OPTIONS = {
+type IScreenOptions = React.ComponentProps<typeof Stack>['screenOptions'];
+const SCREEN_OPTIONS: IScreenOptions = {
     animation: 'ios_from_right',
-    navigationBarColor: '#000',
-} as const;
+    headerStyle: { backgroundColor: '#6366f1' },
+    headerTitleStyle: { color: '#fff' },
+    headerTintColor: '#fff',
+    headerLargeTitle: true,
+    headerTransparent: false,
+};
 
 const INDEX_OPTIONS = {
     headerLargeTitle: true,
-    title: 'NativeWindUI',
-    headerRight: () => <SettingsIcon />,
+    title: 'MetroMoviez',
 } as const;
 
-function SettingsIcon() {
-    const { colors } = useColorScheme();
-    return (
-        <Link href="/modal" asChild>
-            <Pressable className="opacity-80">
-                {({ pressed }) => (
-                    <View className={cn(pressed ? 'opacity-50' : 'opacity-90')}>
-                        <Icon name="cog-outline" color={colors.foreground} />
-                    </View>
-                )}
-            </Pressable>
-        </Link>
-    );
-}
-
-const MODAL_OPTIONS = {
-    presentation: 'modal',
-    animation: 'fade_from_bottom',
-    title: 'Settings',
-    headerRight: () => <ThemeToggle />,
-} as const;
+const styles = StyleSheet.create({
+    flex: { flex: 1 },
+});

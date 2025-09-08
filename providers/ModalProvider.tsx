@@ -5,7 +5,7 @@ const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return (
         <>
             {children}
-            <AnimatedModalCenter onClose={() => {}} />
+            <AnimatedModalCenter />
         </>
     );
 };

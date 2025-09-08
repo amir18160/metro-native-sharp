@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Drawer } from 'expo-router/drawer';
 import {
     View,
@@ -5,8 +6,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     Platform,
-    StatusBar,
     ImageBackground,
+    Image,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerNavigationOptions } from '@react-navigation/drawer';
 import Animated, {
@@ -17,12 +18,15 @@ import Animated, {
     useSharedValue,
     withSpring,
 } from 'react-native-reanimated';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { useEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUserStore } from '~/stores/useUserStore';
 
 const CustomDrawerContent = (props: any) => {
     const progress = useSharedValue(0);
+    const insets = useSafeAreaInsets();
+    const logout = useUserStore((state) => state.clearUser);
 
     useEffect(() => {
         progress.value = withSpring(1, { damping: 20 });
@@ -43,14 +47,22 @@ const CustomDrawerContent = (props: any) => {
             source={require('~/assets/drawer.png')}
             blurRadius={10}
             style={styles.background}>
-            <BlurView intensity={Platform.OS === 'ios' ? 10 : 10} style={styles.blurContainer}>
+            {/* Make the blur container extend into the status-bar safe area by applying paddingTop = insets.top */}
+            <BlurView
+                intensity={Platform.OS === 'ios' ? 10 : 10}
+                style={[styles.blurContainer, { paddingTop: insets.top }]}>
                 <DrawerContentScrollView {...props} contentContainerStyle={styles.scrollContainer}>
                     <Animated.View
                         style={[styles.headerContainer, animatedStyles]}
                         entering={FadeInLeft.duration(500)}>
-                        <View style={styles.avatar} />
+                        <Image
+                            source={require('~/assets/logo.png')}
+                            className="h-32 w-32 rounded-md"
+                            width={400}
+                            height={400}
+                        />
                         <Text style={styles.headerTitle}>MetroMoviez</Text>
-                        <Text style={styles.headerSubtitle}>MetroMoviez@company.com</Text>
+                        <Text style={styles.headerSubtitle}>MetroMoviez.ir</Text>
                     </Animated.View>
 
                     <View style={styles.divider} />
@@ -90,7 +102,7 @@ const CustomDrawerContent = (props: any) => {
                 <Animated.View
                     style={[styles.footer, animatedStyles]}
                     entering={FadeInLeft.delay(300).duration(500)}>
-                    <TouchableOpacity style={styles.logoutButton}>
+                    <TouchableOpacity style={styles.logoutButton} onPress={logout}>
                         <Ionicons name="log-out" size={20} color="#f87171" />
                         <Text style={styles.logoutText}>Sign Out</Text>
                     </TouchableOpacity>
@@ -104,7 +116,6 @@ const CustomDrawerContent = (props: any) => {
 const DrawerLayout = () => {
     return (
         <>
-            <StatusBar barStyle="light-content" backgroundColor="#1e293b" />
             <Drawer
                 drawerContent={(props) => <CustomDrawerContent {...props} />}
                 screenOptions={options}>
@@ -112,13 +123,25 @@ const DrawerLayout = () => {
                     name="(user)"
                     options={{
                         title: 'User Home',
+                        headerShown: true,
                         drawerIcon: ({ color }) => <Ionicons name="home" size={20} color={color} />,
                     }}
                 />
                 <Drawer.Screen
                     name="(admin)"
                     options={{
-                        title: 'Admin Dashboard',
+                        title: 'Admin',
+                        drawerIcon: ({ color }) => (
+                            <MaterialIcons name="admin-panel-settings" size={20} color={color} />
+                        ),
+                    }}
+                />
+
+                <Drawer.Screen
+                    name="(settings)/Settings"
+                    options={{
+                        title: 'Settings',
+                        headerShown: true,
                         drawerIcon: ({ color }) => (
                             <Ionicons name="settings" size={20} color={color} />
                         ),
@@ -144,33 +167,30 @@ const options: DrawerNavigationOptions = {
         fontWeight: '500',
         marginLeft: -16,
     },
+    headerStyle: { backgroundColor: '#6366f1' },
+    headerTintColor: 'white',
 };
 
 const styles = StyleSheet.create({
     background: {
         flex: 1,
     },
+    // Remove fixed platform padding here; we'll apply insets.top dynamically in the component.
     blurContainer: {
         flex: 1,
-        paddingTop: Platform.OS === 'ios' ? 50 : 20,
         backgroundColor: 'rgba(15, 23, 42, 0.674)',
     },
     scrollContainer: {
+        // leave a little internal spacing below status area (actual top inset is handled on the BlurView).
         paddingTop: 20,
     },
     headerContainer: {
         paddingHorizontal: 20,
         paddingBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    avatar: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#334155',
-        marginBottom: 15,
-        borderWidth: 2,
-        borderColor: 'rgba(99, 102, 241, 0.7)',
-    },
+
     headerTitle: {
         fontSize: 24,
         fontWeight: '800',

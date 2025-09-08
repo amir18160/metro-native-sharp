@@ -15,13 +15,12 @@ import Animated, {
     withTiming,
     Easing,
     interpolate,
-    Extrapolate,
     runOnJS,
+    Extrapolation,
 } from 'react-native-reanimated';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MODAL_HEIGHT = SCREEN_HEIGHT * 0.85;
-
 interface IModalProps {
     title: string;
     visible: boolean;
@@ -29,7 +28,6 @@ interface IModalProps {
     scrollable?: boolean;
     onClose: () => void;
 }
-
 export default function Modal({
     title,
     visible,
@@ -38,36 +36,29 @@ export default function Modal({
     scrollable = true,
 }: IModalProps) {
     const [isMounted, setIsMounted] = useState(visible);
-
     const translateY = useSharedValue(MODAL_HEIGHT);
     const backdropOpacity = useSharedValue(0);
     const scale = useSharedValue(0.95);
     const borderRadius = useSharedValue(32);
-
-    const backdropStyle = useAnimatedStyle(() => ({
-        opacity: backdropOpacity.value,
-    }));
-
+    const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
     const modalStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }, { scale: scale.value }],
         borderTopLeftRadius: borderRadius.value,
         borderTopRightRadius: borderRadius.value,
     }));
-
     const contentStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [MODAL_HEIGHT / 2, 0], [0, 1], Extrapolate.CLAMP),
+        opacity: interpolate(translateY.value, [MODAL_HEIGHT / 2, 0], [0, 1], Extrapolation.CLAMP),
         transform: [
             {
                 translateY: interpolate(
                     translateY.value,
                     [0, MODAL_HEIGHT],
                     [0, 20],
-                    Extrapolate.CLAMP
+                    Extrapolation.CLAMP
                 ),
             },
         ],
     }));
-
     useEffect(() => {
         const config = {
             damping: 25,
@@ -75,7 +66,6 @@ export default function Modal({
             mass: 0.8,
             easing: Easing.bezier(0.17, 0.67, 0.83, 0.67),
         };
-
         if (visible) {
             setIsMounted(true);
             backdropOpacity.value = withTiming(1, { duration: 300 });
@@ -95,9 +85,7 @@ export default function Modal({
             });
         }
     }, [backdropOpacity, borderRadius, onClose, scale, translateY, visible]);
-
     if (!isMounted) return null;
-
     return (
         <Portal>
             <View style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
@@ -105,21 +93,17 @@ export default function Modal({
                 <Animated.View
                     style={[StyleSheet.absoluteFillObject, styles.backdrop, backdropStyle]}
                 />
-
                 {/* Touchable Backdrop */}
                 <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
-
                 {/* Modal Content */}
                 <Animated.View style={[styles.modalContainer, modalStyle]}>
                     {/* Handle Bar */}
                     <View style={styles.handleContainer}>
                         <View style={styles.handle} />
                     </View>
-
                     {/* Header */}
                     <View style={styles.header}>
                         <Animated.Text style={[styles.title, contentStyle]}>{title}</Animated.Text>
-
                         <TouchableOpacity
                             onPress={onClose}
                             style={styles.closeButton}
@@ -129,7 +113,6 @@ export default function Modal({
                             </Animated.Text>
                         </TouchableOpacity>
                     </View>
-
                     {/* Content */}
                     <Animated.View style={[styles.content, contentStyle]}>
                         {scrollable ? (
@@ -148,11 +131,8 @@ export default function Modal({
         </Portal>
     );
 }
-
 const styles = StyleSheet.create({
-    backdrop: {
-        backgroundColor: 'rgba(0,0,0,0.6)',
-    },
+    backdrop: { backgroundColor: 'rgba(0,0,0,0.6)' },
     modalContainer: {
         position: 'absolute',
         bottom: 0,
@@ -166,17 +146,8 @@ const styles = StyleSheet.create({
         elevation: 10,
         overflow: 'hidden',
     },
-    handleContainer: {
-        width: '100%',
-        alignItems: 'center',
-        paddingVertical: 12,
-    },
-    handle: {
-        width: 40,
-        height: 5,
-        backgroundColor: '#e5e7eb',
-        borderRadius: 4,
-    },
+    handleContainer: { width: '100%', alignItems: 'center', paddingVertical: 12 },
+    handle: { width: 40, height: 5, backgroundColor: '#e5e7eb', borderRadius: 4 },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -186,12 +157,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#f3f4f6',
     },
-    title: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: '#1f2937',
-        flex: 1,
-    },
+    title: { fontSize: 24, fontWeight: '700', color: '#1f2937', flex: 1 },
     closeButton: {
         marginLeft: 16,
         borderRadius: 999,
@@ -201,18 +167,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    closeText: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#4b5563',
-    },
-    content: {
-        flex: 1,
-        position: 'relative',
-    },
-    scrollContent: {
-        flexGrow: 1,
-        padding: 12,
-        position: 'relative',
-    },
+    closeText: { fontSize: 18, fontWeight: '600', color: '#4b5563' },
+    content: { flex: 1, position: 'relative' },
+    scrollContent: { flexGrow: 1, padding: 12, position: 'relative' },
 });

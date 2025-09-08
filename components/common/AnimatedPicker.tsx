@@ -111,7 +111,7 @@ export default function AnimatedPicker({
     return (
         <View className={clsx('mb-4', className)}>
             {label && (
-                <Text className={`$mb-2 font-semibold text-lg text-white ${labelColor}`}>
+                <Text className={`$mb-2 font-semibold text-lg text-slate-700 ${labelColor}`}>
                     {label}
                 </Text>
             )}

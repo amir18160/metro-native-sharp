@@ -42,9 +42,10 @@ export default function TasksList({ filters }: IProps) {
                     fetchNextPage();
                 }
             }}
+            showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.5}
             ListFooterComponent={isFetchingNextPage ? <Loading /> : null}
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ paddingBottom: 60 }}
         />
     );
 }

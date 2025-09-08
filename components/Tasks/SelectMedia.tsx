@@ -7,8 +7,9 @@ import Modal from '../common/Modal';
 import { SearchableMediaList } from '../common/SearchableMediaList';
 import { TMDbMedia } from '~/types/server/tmdb/tm-db-media';
 import { MediaType } from '~/types/server/tmdb/media-type';
-import { Toast } from 'toastify-react-native';
 import { SelectedMediaDetailsCard } from './SelectedMediaDetailsCard';
+import { modal } from '~/stores/useAnimatedModalCenterStore';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SelectMedia() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,7 @@ export default function SelectMedia() {
     const tvDetails = useGetTMDbShowDetails();
 
     function handleError(message: string) {
-        Toast.error(message);
+        modal.error({ title: 'خطا', message });
     }
 
     function handleSuccess(imdbId?: string) {
@@ -61,7 +62,9 @@ export default function SelectMedia() {
                     title="Select Media"
                     visible={isModalOpen}
                     scrollable={false}>
-                    <SearchableMediaList onSelect={onSelect} />
+                    <SafeAreaView className="flex-1">
+                        <SearchableMediaList onSelect={onSelect} />
+                    </SafeAreaView>
                 </Modal>
             </View>
 

@@ -1,4 +1,4 @@
-import { Pressable, View } from 'react-native';
+import { Pressable, View, Image } from 'react-native';
 import { Text } from '~/components/nativewindui/Text';
 import { Movie } from '~/types/server/tmdb/movie';
 import { TvShow } from '~/types/server/tmdb/tv-show';
@@ -12,7 +12,6 @@ import Animated, {
     useSharedValue,
     withSequence,
 } from 'react-native-reanimated';
-import { CustomImage } from '~/components/common/CustomImage';
 import fallbackPoster from '~/assets/movie/FallbackSearch.png';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -126,15 +125,14 @@ export function SelectedMediaDetailsCard({
             <Animated.View
                 style={pressableStyle}
                 entering={FadeInUp.springify()}
-                className="min-h-48 flex-row rounded-2xl bg-white p-3">
+                className="min-h-48 flex-row rounded-2xl border border-slate-200 bg-gray-50 p-3">
                 {/* Poster */}
-                <CustomImage
+                <Image
                     source={
                         posterPath
                             ? { uri: `https://image.tmdb.org/t/p/original${posterPath}` }
                             : fallbackPoster
                     }
-                    fallbackSource={fallbackPoster}
                     className="mr-4 h-44 w-28 rounded-xl"
                     resizeMode="cover"
                 />

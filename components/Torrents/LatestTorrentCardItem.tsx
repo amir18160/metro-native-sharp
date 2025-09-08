@@ -1,7 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Animated, Dimensions, Pressable, View } from 'react-native';
+import { Animated, Dimensions, Image, ImageBackground, Pressable, View } from 'react-native';
 import { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
-import { CustomImage } from '../common/CustomImage';
 import { Text } from '../nativewindui/Text';
 import SourceBadge from './SourceBadge';
 import { useState } from 'react';
@@ -36,9 +35,6 @@ export default function LatestTorrentCard({ item }: IProps) {
     }));
 
     const onSelectMagnet = (magnet: string) => {
-        console.log('this magnet');
-        console.log(magnet);
-
         setIsModalOpen(false);
 
         router.push({
@@ -87,23 +83,18 @@ export default function LatestTorrentCard({ item }: IProps) {
             }}
             onPress={() => onSelectCard()}>
             <View className="overflow-hidden rounded-2xl bg-white shadow-lg shadow-black/10 dark:bg-gray-800 dark:shadow-gray-900/50">
-                {/* Image container with fallback */}
-                {item.imageUrl ? (
-                    <CustomImage
-                        source={{ uri: item.imageUrl }}
-                        style={{ height: CARD_WIDTH * 0.6, width: '100%' }}
-                        resizeMode="cover"
-                        fallbackSource={require('~/assets/movie-time.jpg')}
-                    />
-                ) : (
-                    <View className="flex h-32 w-full items-center justify-center bg-gray-100 dark:bg-gray-700">
-                        <CustomImage
-                            source={require('../../assets/movie-time.jpg')}
+                <ImageBackground
+                    source={require('../../assets/movie-time.jpg')}
+                    style={{ height: CARD_WIDTH * 0.6, width: '100%' }}
+                    resizeMode="cover">
+                    {item.imageUrl && (
+                        <Image
+                            source={{ uri: item.imageUrl }}
                             style={{ height: CARD_WIDTH * 0.6, width: '100%' }}
                             resizeMode="cover"
                         />
-                    </View>
-                )}
+                    )}
+                </ImageBackground>
 
                 {/* Content */}
                 <View className="p-3">

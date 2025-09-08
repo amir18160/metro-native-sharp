@@ -9,9 +9,16 @@ export function AuthRedirector() {
 
     useEffect(() => {
         const inAuthGroup = segments[0] === '(auth)';
+        const isSettingsGroup = segments[1] === '(settings)';
 
-        if (!user && !inAuthGroup) {
-            router.replace('/(auth)/Login');
+        if (!user) {
+            if (isSettingsGroup) {
+                return;
+            }
+
+            if (!inAuthGroup) {
+                router.replace('/(auth)/Login');
+            }
         }
     }, [segments, user, router]);
 

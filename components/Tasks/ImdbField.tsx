@@ -43,6 +43,7 @@ export default function ImdbField({ error }: IProps) {
                 showPasteButton
                 required
                 errorMessage={error}
+                size="md"
             />
         </Animated.View>
     );

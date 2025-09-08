@@ -3,12 +3,11 @@ import { useUserStore } from '~/stores/useUserStore';
 import { Roles } from '~/types/common/roles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Animated, Pressable, View } from 'react-native';
-import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import QuickAccessButton from '~/components/QuickAccess/QuickAccessButton';
 import { useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 const ICON_ACTIVE = ['#6366F1', '#8B5CF6'];
 const ICON_INACTIVE = ['#D4D4D8', '#D4D4D8'];
 
@@ -59,7 +58,7 @@ export default function AdminLayout() {
                 onPressOut={handlePressOut}
                 onPress={onPress}
                 android_ripple={{ color: 'transparent' }}
-                style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                style={styles.pressableCenter}>
                 <Animated.View
                     style={{
                         transform: [{ scale: scaleAnim }],
@@ -75,7 +74,7 @@ export default function AdminLayout() {
 
     return (
         <>
-            <QuickAccessButton />
+            {/* <QuickAccessButton /> */}
             <Tabs
                 screenOptions={{
                     headerShown: true,
@@ -123,6 +122,15 @@ export default function AdminLayout() {
                 />
 
                 <Tabs.Screen
+                    name="(tabs)/Telegram"
+                    options={{
+                        tabBarIcon: ({ focused }) =>
+                            renderTabIcon(focused, FontAwesome5, 'telegram-plane'),
+                        headerTitle: 'Telegram Tools',
+                    }}
+                />
+
+                <Tabs.Screen
                     name="(tabs)/Torrents"
                     options={{
                         tabBarIcon: ({ focused }) =>
@@ -151,10 +159,9 @@ export default function AdminLayout() {
                 )}
 
                 <Tabs.Screen
-                    name="(tabs)/Tasks"
+                    name="(tabs)/Tags"
                     options={{
-                        tabBarIcon: ({ focused }) =>
-                            renderTabIcon(focused, MaterialCommunityIcons, 'clipboard-check'),
+                        tabBarIcon: ({ focused }) => renderTabIcon(focused, AntDesign, 'tag'),
                         headerTitle: 'Tasks',
                     }}
                 />
@@ -185,4 +192,5 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    pressableCenter: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

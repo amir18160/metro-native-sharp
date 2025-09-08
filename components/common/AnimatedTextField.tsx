@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, TouchableOpacity, View } from 'react-native';
+import { ReturnKeyTypeOptions, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -13,7 +13,7 @@ import * as Clipboard from 'expo-clipboard';
 import { Text } from '~/components/nativewindui/Text';
 import { clsx } from 'clsx';
 
-interface AnimatedTextFieldProps {
+export interface AnimatedTextFieldProps {
     value: string;
     labelColor?: string;
     onChangeText: (text: string) => void;
@@ -31,6 +31,10 @@ interface AnimatedTextFieldProps {
     disabled?: boolean;
     removeButton?: boolean;
     onRemove?: () => void;
+    autoFocus?: boolean;
+    keyboardType?: 'default' | 'numeric';
+    returnKeyType?: ReturnKeyTypeOptions;
+    onSubmitEditing?: () => void;
 }
 
 export default function AnimatedTextField({
@@ -51,6 +55,10 @@ export default function AnimatedTextField({
     disabled = false,
     removeButton = true,
     onRemove = undefined,
+    autoFocus = false,
+    keyboardType = 'default',
+    returnKeyType = undefined,
+    onSubmitEditing = undefined,
 }: AnimatedTextFieldProps) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(!secureTextEntry);
 
@@ -135,7 +143,7 @@ export default function AnimatedTextField({
         <Animated.View style={containerStyle} className={clsx('w-full', className)}>
             {label && (
                 <View className="mb-2 flex-row items-center justify-between">
-                    <Text className={`font-semibold text-lg text-white ${labelColor}`}>
+                    <Text className={`text-grey-700 font-semibold text-lg ${labelColor}`}>
                         {label}
                     </Text>
                     {required && <Text className="text-lg text-red-500">*</Text>}
@@ -160,6 +168,10 @@ export default function AnimatedTextField({
                     className={clsx('flex-1 text-white', sizeClasses[size])}
                     secureTextEntry={!isPasswordVisible && secureTextEntry}
                     editable={!disabled}
+                    autoFocus={autoFocus}
+                    keyboardType={keyboardType}
+                    returnKeyType={returnKeyType}
+                    onSubmitEditing={onSubmitEditing}
                 />
 
                 {showPasteButton && (

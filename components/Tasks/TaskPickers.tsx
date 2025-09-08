@@ -25,6 +25,7 @@ export default function TaskPickers() {
                         store.setTaskType(stringToTorrentTaskType(value) as TorrentTaskType)
                     }
                     options={taskTypeOptions}
+                    size="sm"
                 />
             </View>
             <View className="flex-1">
@@ -37,6 +38,7 @@ export default function TaskPickers() {
                         );
                     }}
                     options={priorityOptions}
+                    size="sm"
                 />
             </View>
         </View>
