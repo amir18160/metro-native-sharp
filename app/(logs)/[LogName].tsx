@@ -142,7 +142,7 @@ export default function LogDetailPage() {
                     return (
                         <Text
                             selectable
-                            className={`px-3 py-0.5 font-mono text-xs leading-5 ${
+                            className={`px-3 py-0.5 font-mono text-xs  ${
                                 isMatch
                                     ? 'rounded-md bg-yellow-200 text-black dark:bg-yellow-600 dark:text-white'
                                     : 'text-gray-800 dark:text-gray-200'

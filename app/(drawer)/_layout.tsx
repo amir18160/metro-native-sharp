@@ -22,6 +22,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '~/stores/useUserStore';
+import { Roles } from '~/types/common/roles';
 
 const CustomDrawerContent = (props: any) => {
     const progress = useSharedValue(0);
@@ -114,6 +115,8 @@ const CustomDrawerContent = (props: any) => {
 };
 
 const DrawerLayout = () => {
+    const user = useUserStore((state) => state.getUser)();
+
     return (
         <>
             <Drawer
@@ -127,15 +130,21 @@ const DrawerLayout = () => {
                         drawerIcon: ({ color }) => <Ionicons name="home" size={20} color={color} />,
                     }}
                 />
-                <Drawer.Screen
-                    name="(admin)"
-                    options={{
-                        title: 'Admin',
-                        drawerIcon: ({ color }) => (
-                            <MaterialIcons name="admin-panel-settings" size={20} color={color} />
-                        ),
-                    }}
-                />
+                {user && [Roles.Admin, Roles.Owner].includes(user.role) && (
+                    <Drawer.Screen
+                        name="(admin)"
+                        options={{
+                            title: 'Admin',
+                            drawerIcon: ({ color }) => (
+                                <MaterialIcons
+                                    name="admin-panel-settings"
+                                    size={20}
+                                    color={color}
+                                />
+                            ),
+                        }}
+                    />
+                )}
 
                 <Drawer.Screen
                     name="(settings)/Settings"

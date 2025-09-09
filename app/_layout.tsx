@@ -80,7 +80,9 @@ export default function RootLayout() {
                             </GestureHandlerRootView>
                         </NavThemeProvider>
                     </ModalProvider>
-                    <DevToolsBubble queryClient={queryClient} />
+                    {process.env.EXPO_PUBLIC_NODE_ENV === 'development' && (
+                        <DevToolsBubble queryClient={queryClient} />
+                    )}
                     <ToastProvider />
                 </PortalProvider>
             </QueryClientProvider>
